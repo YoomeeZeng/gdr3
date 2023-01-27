@@ -6,8 +6,12 @@ from astroquery.vizier import Vizier
 from astroquery.gaia import Gaia
 import astropy.units as u
 import astropy.coordinates as coord
+import pymc3 as pm
 import warnings
 warnings.filterwarnings("ignore")
+
+from .misc_utils import *
+from .plot_utils import *
 
 Gaia.MAIN_GAIA_TABLE = "gaiadr3.gaia_source"
 
@@ -153,9 +157,12 @@ class NSS:
                         self.K1_err=nss_table['semi_amplitude_primary_error'][0]
                         self.gamma=nss_table['center_of_mass_velocity'][0]
                         self.gamma_err=nss_table['center_of_mass_velocity_error'][0] 
+                        self.arg_per=nss_table['arg_periastron'][0]
+                        self.arg_per_err=nss_table['arg_periastron_error'][0]                         
                         self.t_peri=nss_table['t_periastron'][0]
                         self.t_peri_err=nss_table['t_periastron_error'][0]
-                        
+                        self.t_peri_jd=epoch=2457389.0+self.t_peri
+                        #Definition of t_peri is time of RV max for SB1C
                         
                         #Solution params
                         self.total_rvs_primary=int(nss_table['rv_n_obs_primary'][0]       )    
@@ -174,7 +181,32 @@ class NSS:
                 
         except:
             print('Querying GDR3 NSS Failed.')
+
+    def get_rvdf(self):
+    
+        phases=np.linspace(0,1,100)
+        rvs=get_phased_sb1_rvs(phases,self.K1,self.ecc,self.arg_per,self.gamma)  
+        
+        self.rv_df=pd.DataFrame({'phase':phases,'RV':rvs}) 
+
+    def plot_gaia_sb1(self):
+    
+        self.get_rvdf()
+        plot_rvs(self.rv_df)         
+
+    def build_sb1_model_phase(self):
+        
+        phases=np.linspace(0,1,100)
+        with pm.Model() as sb1model:
+            #period_dist=pm.Normal('per',self.period,self.period_err)
+            ecc_dist=pm.Normal('ecc',self.ecc,self.ecc_err) 
+            K1_dist=pm.Normal('K1',self.K1,self.K1_err) 
+            arg_per_dist=pm.Normal('omega',self.arg_per,self.arg_per_err) 
+            gamma_dist=pm.Normal('gamma',self.gamma,self.gamma_err) 
+            #t_peri_dist=pm.Normal('t_peri',self.t_peri_jd,self.t_peri_err) 
             
-                
+            rv=pm.Deterministic('RV',get_phased_sb1_rvs(phases,K1_dist,ecc_dist,arg_per_dist,gamma_dist))
+        
+        self.pmdict=pm.sample_prior_predictive(samples=100,model=sb1model)
             
     
