@@ -6,7 +6,6 @@ from astroquery.vizier import Vizier
 from astroquery.gaia import Gaia
 import astropy.units as u
 import astropy.coordinates as coord
-import pymc3 as pm
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -40,8 +39,11 @@ def get_mag_err(flux,flux_err):
 class NSS:
     
     def __init__(self):
-        
-        pass
+        self.ra=np.nan
+        self.dec=np.nan
+        self.gdr3_source=np.nan
+        self.rv_orbit_loaded=False
+        self.observations_loaded=False
 
     def query_coords(self,ra,dec,query_radius=2):
  
@@ -162,6 +164,16 @@ class NSS:
                         self.t_peri=nss_table['t_periastron'][0]
                         self.t_peri_err=nss_table['t_periastron_error'][0]
                         self.t_peri_jd=epoch=2457389.0+self.t_peri
+                        
+                        #Lucy-Sweeney test for near circular binaries
+                        self.ecc_over_err=self.ecc/self.ecc_err
+                        if not self.ecc_over_err>5:
+                            print(f'Orbital eccentricity might be negligible: e/de={round(self.ecc_over_err,2)}')
+                            print('Setting arg_periastron=0, ecc=0')
+                            self.arg_per=0
+                            self.arg_per_err=0
+                            self.ecc=0
+                            self.ecc_err=0                            
                         #Definition of t_peri is time of RV max for SB1C
                         
                         #Solution params
@@ -170,7 +182,9 @@ class NSS:
                         self.solution_gof=nss_table['goodness_of_fit'][0]      
                         self.solution_efficiency=nss_table['efficiency'][0]        
                         self.solution_significance=nss_table['significance'][0]     
-                        self.solution_flags=nss_table['flags'][0]      
+                        self.solution_flags=nss_table['flags'][0]    
+                        
+                        self.rv_orbit_loaded=True
                           
                 #Add more solution types: SB2                                                   
                 else:
@@ -182,7 +196,7 @@ class NSS:
         except:
             print('Querying GDR3 NSS Failed.')
 
-    def get_rvdf(self):
+    def _get_rvdf(self):
     
         phases=np.linspace(0,1,100)
         rvs=get_phased_sb1_rvs(phases,self.K1,self.ecc,self.arg_per,self.gamma)  
@@ -191,22 +205,95 @@ class NSS:
 
     def plot_gaia_sb1(self):
     
-        self.get_rvdf()
-        plot_rvs(self.rv_df)         
+        self._get_rvdf()
+        plot_sb1_rv(self.rv_df)         
 
-    def build_sb1_model_phase(self):
-        
-        phases=np.linspace(0,1,100)
-        with pm.Model() as sb1model:
-            #period_dist=pm.Normal('per',self.period,self.period_err)
-            ecc_dist=pm.Normal('ecc',self.ecc,self.ecc_err) 
-            K1_dist=pm.Normal('K1',self.K1,self.K1_err) 
-            arg_per_dist=pm.Normal('omega',self.arg_per,self.arg_per_err) 
-            gamma_dist=pm.Normal('gamma',self.gamma,self.gamma_err) 
-            #t_peri_dist=pm.Normal('t_peri',self.t_peri_jd,self.t_peri_err) 
-            
-            rv=pm.Deterministic('RV',get_phased_sb1_rvs(phases,K1_dist,ecc_dist,arg_per_dist,gamma_dist))
-        
-        self.pmdict=pm.sample_prior_predictive(samples=100,model=sb1model)
-            
+    def plot_gaia_sb1_draws(self):
     
+        if self.rv_orbit_loaded:
+            
+            if self.orbits_sampled:
+                
+                self._get_rvdf()
+                plot_sb1_rv(self.rv_df,self.sb1_draws)  
+                
+            else:
+                
+                print('This object does not have its orbit sampled. Sample with draw_from_sb1_model()')
+            
+        else:
+            
+            print('This object does not have a Gaia RV orbit. Try querying NSS.')
+            
+    def draw_from_sb1_model(self,draws=100):
+        
+        if self.rv_orbit_loaded:
+            period_dist=np.random.normal(self.period,self.period_err,draws)
+            ecc_dist=np.random.normal(self.ecc,self.ecc_err,draws) 
+            K1_dist=np.random.normal(self.K1,self.K1_err,draws) 
+            arg_per_dist=np.random.normal(self.arg_per,self.arg_per_err,draws) 
+            gamma_dist=np.random.normal(self.gamma,self.gamma_err,draws)    
+            t_peri_dist=np.random.normal(self.t_peri_jd,self.t_peri_err,draws) 
+            
+            
+            self.sb1_draws=pd.DataFrame({'period':period_dist,'ecc':ecc_dist,'K1':K1_dist,'arg_per':arg_per_dist,
+                                         'gamma':gamma_dist,'t_peri':t_peri_dist})
+            self.orbits_sampled=True
+        else:
+            print('This object does not have a Gaia RV orbit. Try querying NSS.')
+            
+    def load_rv_observations(self,times,rvs,rv_errs,data_source):
+        
+        if self.rv_orbit_loaded:
+            
+            phases=((times-self.t_peri_jd)/self.period)%1 
+            self.data_df=pd.DataFrame({'JD':times,'phase':phases,'RV':rvs,'RV_err':rv_errs,'obs_src':data_source})
+            self.observations_loaded=True
+            self.calculate_residuals_from_observations()
+            
+        else:
+            
+            print('No orbit to calculate phases.')
+            self.data_df=pd.DataFrame({'JD':times,'phase':np.nan*np.zeros(len(times)),'RV':rvs,'RV_err':rv_errs,'obs_src':data_source})
+            self.observations_loaded=True
+        
+        print(f'RV data loaded: {len(self.data_df)} epochs')
+        
+    def calculate_residuals_from_observations(self):
+        
+        if self.observations_loaded:
+            
+            if self.rv_orbit_loaded:
+                    
+                self.data_df['RV_model']=get_phased_sb1_rvs(self.data_df.phase,self.K1,self.ecc,self.arg_per,self.gamma)
+                self.data_df['RV_resid']=self.data_df['RV']-self.data_df['RV_model']
+                    
+                
+            else:
+                
+                print('This object does not have a Gaia RV orbit. Try querying NSS.')
+     
+        else:
+            print('Observations not loaded!')
+            
+    def plot_nss_sol_vs_data(self):
+    
+        if self.observations_loaded:
+            
+            if self.rv_orbit_loaded:
+                
+                if self.orbits_sampled:
+                    
+                    self._get_rvdf()
+                    plot_sb1_orbit_data_comparison(self.rv_df,self.data_df,self.sb1_draws)
+                    
+                else:
+                    
+                    print('This object does not have its orbit sampled. Sample with draw_from_sb1_model()')
+                
+            else:
+                
+                print('This object does not have a Gaia RV orbit. Try querying NSS.')
+     
+        else:
+            print('Observations not loaded!')

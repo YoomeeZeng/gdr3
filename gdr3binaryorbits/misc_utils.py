@@ -31,7 +31,6 @@ def rv(x,K,e,w,gamma):
 
     return y
 
-
 def get_phased_sb1_rvs(phases,K1,ecc,arg_per,gamma):
     
     rvs=rv(phases,K1,ecc,arg_per,gamma)
@@ -44,3 +43,17 @@ def get_phased_sb2_rvs(phases,K1,ecc,arg_per,gamma,q):
     rvs_2=-rvs_1*q
     
     return rvs_1, rvs_2
+
+def get_sb1_orbit_samples(period,ecc,K1,arg_per,gamma,t_peri):
+    
+    epochs=np.linspace(2457389.0-1000,2457389.0+1000,10000)
+    phases=((epochs-t_peri)/period)%1  
+    
+    rv_sampled=get_phased_sb1_rvs(phases,K1,ecc,arg_per,gamma)
+    
+    return rv_sampled, phases
+    
+    
+    
+    
+    
