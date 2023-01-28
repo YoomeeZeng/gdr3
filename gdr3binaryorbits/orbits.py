@@ -6,6 +6,9 @@ from astroquery.vizier import Vizier
 from astroquery.gaia import Gaia
 import astropy.units as u
 import astropy.coordinates as coord
+from astropy.time import Time
+from datetime import datetime
+
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -43,7 +46,9 @@ class NSS:
         self.dec=np.nan
         self.gdr3_source=np.nan
         self.rv_orbit_loaded=False
+        self.orbits_sampled=False
         self.observations_loaded=False
+        self.current_jd= Time(datetime.now().isoformat(), format='isot').jd
 
     def query_coords(self,ra,dec,query_radius=2):
  
@@ -253,6 +258,33 @@ class NSS:
         else:
             print('This object does not have a Gaia RV orbit. Try querying NSS.')
             
+    def predict_next_rvminmax(self):
+        
+
+        self.current_orbital_phase=((self.current_jd-self.t_peri_jd)/self.period)%1
+        
+        print(f'At current JD={self.current_jd}, orbital phase is {round(self.current_orbital_phase,2)}')
+                
+        self.rv_max,self.phase_rv_max,self.rv_min,self.phase_rv_min=get_rv_extrema(self.K1,self.ecc,self.arg_per,self.gamma)
+        
+        phase_diff_rvmin=self.phase_rv_min-self.current_orbital_phase
+        phase_diff_rvmax=self.phase_rv_max-self.current_orbital_phase
+        
+        #if phase_diffs are negative, extrema are in next cycle, add 1
+        
+        if phase_diff_rvmin<0:
+            phase_diff_rvmin+=1
+        if phase_diff_rvmax<0:
+            phase_diff_rvmax+=1            
+            
+            
+        self.jd_next_rv_min=(phase_diff_rvmin*self.period)+self.current_jd
+        self.jd_next_rv_max=(phase_diff_rvmax*self.period)+self.current_jd            
+            
+          
+        print(f'Next RV maximum of {round(self.rv_max,1)} km/s will occur on JD={round(self.jd_next_rv_max,5)} in {round(self.jd_next_rv_max-self.current_jd,1)} days.')     
+        print(f'Next RV minimum of {round(self.rv_min,1)} km/s will occur on JD={round(self.jd_next_rv_min,5)} in {round(self.jd_next_rv_min-self.current_jd,1)} days.')       
+    
     def get_predicted_sb1_rvs(self,times):
         
         if self.rv_orbit_loaded:

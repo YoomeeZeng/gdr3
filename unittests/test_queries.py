@@ -10,6 +10,7 @@ star=NSS()
 star.query_source('4714104568778128256')
 star.query_nss('SB1')
 #star.plot_gaia_sb1()
+star.predict_next_rvminmax()
 star.draw_from_sb1_model(draws=200)
 star.plot_gaia_sb1_draws()
 
@@ -24,10 +25,12 @@ star.plot_nss_sol_vs_data()
 times=np.linspace(2459972.50476,2459972.50476+10,10)
 a=star.get_predicted_sb1_rvs(times)
 print(a)
-'''
+
+
 star=NSS()
 star.query_coords(267.65542,-21.50428)
 star.query_nss('SB1')
+star.predict_next_rvminmax()
 #star.plot_gaia_sb1()
 star.draw_from_sb1_model(draws=200)
-star.plot_gaia_sb1_draws()'''
+star.plot_gaia_sb1_draws()

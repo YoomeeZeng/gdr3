@@ -37,6 +37,20 @@ def get_phased_sb1_rvs(phases,K1,ecc,arg_per,gamma):
     
     return rvs
 
+def get_rv_extrema(K1,ecc,arg_per,gamma):
+    
+    phases=np.arange(0,1,0.001)
+    
+    rvs=rv(phases,K1,ecc,arg_per,gamma)
+    
+    rv_max=rvs[rvs.argmax()]
+    phase_rv_max=phases[rvs.argmax()]
+    
+    rv_min=rvs[rvs.argmin()]
+    phase_rv_min=phases[rvs.argmin()]  
+    
+    return rv_max,phase_rv_max,rv_min,phase_rv_min
+
 def get_phased_sb2_rvs(phases,K1,ecc,arg_per,gamma,q):
     
     rvs_1=rv(phases,K1,ecc,arg_per,gamma)
