@@ -184,8 +184,19 @@ class NSS:
                         self.solution_significance=nss_table['significance'][0]     
                         self.solution_flags=nss_table['flags'][0]    
                         
+                        self.params_dict={'gdr3_source':self.gdr3_source,'period':self.period,'ecc':self.ecc,'K1':self.K1,
+                                          'gamma':self.gamma,'arg_per':self.arg_per,'t_peri':self.t_peri_jd}
+                        
                         self.rv_orbit_loaded=True
-                          
+                        
+                        print('-----------------------------------')
+                        print(f'P_orb={self.period}+/-{self.period_err} days')
+                        print(f'e_orb={self.ecc}+/-{self.ecc_err}' )    
+                        print(f'K1={self.K1}+/-{self.K1_err} km/s')  
+                        print(f'v_gamma={self.gamma}+/-{self.gamma_err} km/s')        
+                        print(f'omega_per={self.arg_per}+/-{self.arg_per} deg')  
+                        print(f't_peri={self.t_peri_jd}+/-{self.t_peri}')
+                        print('-----------------------------------')                         
                 #Add more solution types: SB2                                                   
                 else:
                     print(f'No orbit solutions of type {solution_type} for Source={self.gdr3_source}')
@@ -206,7 +217,7 @@ class NSS:
     def plot_gaia_sb1(self):
     
         self._get_rvdf()
-        plot_sb1_rv(self.rv_df)         
+        plot_sb1_rv(self.rv_df,self.params_dict)         
 
     def plot_gaia_sb1_draws(self):
     
@@ -215,7 +226,7 @@ class NSS:
             if self.orbits_sampled:
                 
                 self._get_rvdf()
-                plot_sb1_rv(self.rv_df,self.sb1_draws)  
+                plot_sb1_rv(self.rv_df,self.params_dict,self.sb1_draws)  
                 
             else:
                 
@@ -241,6 +252,35 @@ class NSS:
             self.orbits_sampled=True
         else:
             print('This object does not have a Gaia RV orbit. Try querying NSS.')
+            
+    def get_predicted_sb1_rvs(self,times):
+        
+        if self.rv_orbit_loaded:
+            
+            if self.orbits_sampled:
+                
+                expected_rv=[]
+                expected_rv_std=[]
+                
+                for time in times:
+                    expected_rv_i,expected_rv_std_i=get_predicted_rv(time,self.sb1_draws)
+                    expected_rv.append(expected_rv_i)
+                    expected_rv_std.append(expected_rv_std_i)
+                    
+                
+                predictions_df=pd.DataFrame({'time':times,'predicted_rv':expected_rv,'predicted_rv_std':expected_rv_std})
+                
+                return predictions_df
+
+            else:
+                
+                print('This object does not have its orbit sampled. Sample with draw_from_sb1_model()')
+            
+        else:
+            
+            print('This object does not have a Gaia RV orbit. Try querying NSS.')
+
+            
             
     def load_rv_observations(self,times,rvs,rv_errs,data_source):
         
@@ -268,7 +308,6 @@ class NSS:
                 self.data_df['RV_model']=get_phased_sb1_rvs(self.data_df.phase,self.K1,self.ecc,self.arg_per,self.gamma)
                 self.data_df['RV_resid']=self.data_df['RV']-self.data_df['RV_model']
                     
-                
             else:
                 
                 print('This object does not have a Gaia RV orbit. Try querying NSS.')
@@ -285,7 +324,7 @@ class NSS:
                 if self.orbits_sampled:
                     
                     self._get_rvdf()
-                    plot_sb1_orbit_data_comparison(self.rv_df,self.data_df,self.sb1_draws)
+                    plot_sb1_orbit_data_comparison(self.rv_df,self.data_df,self.params_dict,self.sb1_draws)
                     
                 else:
                     

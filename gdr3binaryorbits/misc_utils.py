@@ -53,6 +53,20 @@ def get_sb1_orbit_samples(period,ecc,K1,arg_per,gamma,t_peri):
     
     return rv_sampled, phases
     
+
+def get_phase(time,period,epoch):
+    
+    return ((time-epoch)/period)%1     
+
+def get_predicted_rv(time,rv_samples):
+    
+    phases=np.vectorize(get_phase)(time,rv_samples.period,rv_samples.t_peri)
+    rvs=np.vectorize(rv)(phases,rv_samples.K1,rv_samples.ecc,rv_samples.arg_per,rv_samples.gamma)
+    
+    rvs_median=np.median(rvs)
+    rvs_std=np.std(rvs)
+    
+    return rvs_median, rvs_std
     
     
     

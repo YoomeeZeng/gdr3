@@ -8,9 +8,7 @@ import numpy as np
 
 star=NSS()
 star.query_source('4714104568778128256')
-print(star.gdr3_source,star.gdr3_solution,star.gdr3_plx)
 star.query_nss('SB1')
-print(star.period,star.ecc,star.K1,star.gamma,star.t_peri)
 #star.plot_gaia_sb1()
 star.draw_from_sb1_model(draws=200)
 star.plot_gaia_sb1_draws()
@@ -22,12 +20,14 @@ data_src=['CHIRON','CHIRON','CHIRON','RAVE','CHIRON','CHIRON']
 
 star.load_rv_observations(times,rvs,rv_errs,data_src)
 star.plot_nss_sol_vs_data()
+
+times=np.linspace(2459972.50476,2459972.50476+10,10)
+a=star.get_predicted_sb1_rvs(times)
+print(a)
 '''
 star=NSS()
 star.query_coords(267.65542,-21.50428)
-print(star.gdr3_source,star.gdr3_solution,star.gdr3_plx)
 star.query_nss('SB1')
-print(star.period,star.ecc,star.K1,star.gamma,star.t_peri)
 #star.plot_gaia_sb1()
 star.draw_from_sb1_model(draws=200)
 star.plot_gaia_sb1_draws()'''

@@ -22,7 +22,7 @@ def set_rcparams():
 
 set_rcparams()
 
-def plot_sb1_rv(rv_df,rv_samples=pd.DataFrame()):
+def plot_sb1_rv(rv_df,params_dict,rv_samples=pd.DataFrame()):
     
     fig, ax = plt.subplots(nrows=1, ncols=1,figsize=(20,10))
     
@@ -51,12 +51,17 @@ def plot_sb1_rv(rv_df,rv_samples=pd.DataFrame()):
 
     ax.plot(rv_df.phase,rv_df.RV,c='r',lw=3,alpha=1,label=r'$\rm Gaia~ DR3~ SB1~ Orbit$')
     ax.plot(rv_df.phase+1,rv_df.RV,c='r',lw=3,alpha=1)   
-        
+    
+    gsrc=params_dict['gdr3_source']
+    plt.title(f'Gaia DR3 {gsrc}',fontsize=48)
+    
     ax.legend(fontsize=26,loc=1)
     ax.set_xlim(-0.05,2.05)
+    gsrc=params_dict['gdr3_source']
+    plt.title(f'Gaia DR3 {gsrc}',fontsize=48)
     plt.show()
     
-def plot_sb1_orbit_data_comparison(rv_df,data,rv_samples=pd.DataFrame()):
+def plot_sb1_orbit_data_comparison(rv_df,data,params_dict,rv_samples=pd.DataFrame()):
     
     fig, axes = plt.subplots(nrows=2, ncols=1,figsize=(25,25))
     gs = gridspec.GridSpec(2, 1, height_ratios=[2,1]) 
@@ -84,7 +89,7 @@ def plot_sb1_orbit_data_comparison(rv_df,data,rv_samples=pd.DataFrame()):
     for n,gr in data.groupby('obs_src'):
         
         ax.errorbar(gr.phase,gr.RV,yerr=gr.RV_err,markersize=marker_sizes[i],linestyle='none',label=n,marker=markers[i],alpha=0.75,c=colors[i])  
-        ax.errorbar(gr.phase+1,gr.RV,yerr=gr.RV_err,markersize=marker_sizes[i],linestyle='none',label=n,marker=markers[i],alpha=0.75,c=colors[i]) 
+        ax.errorbar(gr.phase+1,gr.RV,yerr=gr.RV_err,markersize=marker_sizes[i],linestyle='none',marker=markers[i],alpha=0.75,c=colors[i]) 
             
         i+=1
     
@@ -101,7 +106,8 @@ def plot_sb1_orbit_data_comparison(rv_df,data,rv_samples=pd.DataFrame()):
         
     #Plot the published model
     ax.plot(rv_df.phase,rv_df.RV,c='r',lw=3,alpha=1,label=r'$\rm Gaia~ DR3~ SB1~ Orbit$')
-    ax.plot(rv_df.phase+1,rv_df.RV,c='r',lw=3,alpha=1)   
+    ax.plot(rv_df.phase+1,rv_df.RV,c='r',lw=3,alpha=1)  
+    ax.legend(fontsize=36)
 
     #Now plot residuals with the Gaia model    
     ax1.yaxis.set_ticks_position('both')
@@ -133,7 +139,8 @@ def plot_sb1_orbit_data_comparison(rv_df,data,rv_samples=pd.DataFrame()):
     ax1.axhline(0,c='k',alpha=0.5,ls='--',lw=3)
     
     #ax.text(0.9,-15,r'$P_{\rm orb}=81.16839^{+0.00044}_{-0.00045}~\rm d$',fontsize=42)
-   
+    gsrc=params_dict['gdr3_source']
+    plt.title(f'Gaia DR3 {gsrc}',fontsize=48)   
     
     plt.show()
     
