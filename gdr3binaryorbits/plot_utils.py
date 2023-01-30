@@ -76,7 +76,7 @@ def plot_fm_dist(rv_samples,params_dict):
     ax.tick_params(direction='in',axis='both',which='major',length=6,width=2,labelsize=36)
     ax.minorticks_on()   
     
-    ax.hist(rv_samples.fm,bins=50,density=True,histtype='step')
+    ax.hist(rv_samples.fm,bins=50,density=True,histtype='step',lw=3)
     gsrc=params_dict['gdr3_source']
     plt.title(f'Gaia DR3 {gsrc}',fontsize=48)
     plt.show()
