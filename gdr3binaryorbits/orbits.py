@@ -253,6 +253,7 @@ class NSS:
             
             self.sb1_draws=pd.DataFrame({'period':period_dist,'ecc':ecc_dist,'K1':K1_dist,'arg_per':arg_per_dist,
                                          'gamma':gamma_dist,'t_peri':t_peri_dist})
+            self.sb1_draws['fm']=np.vectorize(get_fm)(self.sb1_draws.period,self.sb1_draws.ecc,self.sb1_draws.K1)
             self.orbits_sampled=True
         else:
             print('This object does not have a Gaia RV orbit. Try querying NSS.')
@@ -311,6 +312,27 @@ class NSS:
             
             print('This object does not have a Gaia RV orbit. Try querying NSS.')
 
+
+    def get_fm_dist(self):
+        
+        if self.rv_orbit_loaded:
+            
+            if self.orbits_sampled:
+                plot_fm_dist(self.sb1_draws,self.params_dict)
+                
+                self.fm_50=self.sb1_draws.fm.quantile(0.5)
+                self.fm_84=self.sb1_draws.fm.quantile(0.84)
+                self.fm_16=self.sb1_draws.fm.quantile(0.16)       
+                self.fm_err=(np.abs(self.fm_84-self.fm_50)+np.abs(self.fm_16-self.fm_50))/2
+                
+                print(f'f(M)={self.fm_50} +/- {self.fm_err}')
+            else:
+                
+                print('This object does not have its orbit sampled. Sample with draw_from_sb1_model()')
+            
+        else:
+            
+            print('This object does not have a Gaia RV orbit. Try querying NSS.')
             
             
     def load_rv_observations(self,times,rvs,rv_errs,data_source):

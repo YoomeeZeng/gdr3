@@ -3,6 +3,11 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 
+def get_fm(per,e,k):
+    #get mass function given period, ecc, and RV semi-amp
+    y=(per*86400*(abs(k)**3)*((1-e**2)**1.5))/(2*3.142*0.0043*3.0857*10000000000000)
+    return y
+
 def nr(g, dg, E, M,e,eps=1e-5):
     for i in range(50):
         E = E - (g(E,e,M))/dg(E,e,M)
