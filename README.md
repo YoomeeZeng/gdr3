@@ -10,9 +10,6 @@
 
 # gdr3binaryorbits
 
-<!-- ABOUT THE PROJECT -->
-## About The Project
-
 Python code to visualize the radial velocity orbits published in Gaia DR3.
 
 Note: Currently only supports queries for SB1 orbits. SB2 orbits will be added shortly!
