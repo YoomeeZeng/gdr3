@@ -326,7 +326,7 @@ class NSS:
                 self.fm_16=self.sb1_draws.fm.quantile(0.16)       
                 self.fm_err=(np.abs(self.fm_84-self.fm_50)+np.abs(self.fm_16-self.fm_50))/2
                 
-                print(f'f(M)={self.fm_50} +/- {self.fm_err}')
+                print(f'f(M)={self.fm_50} +/- {self.fm_err} Msun')
             else:
                 
                 print('This object does not have its orbit sampled. Sample with draw_from_sb1_model()')
@@ -349,7 +349,7 @@ class NSS:
                     self.asini1_16=self.sb1_draws.asini.quantile(0.16)       
                     self.asini1_err=(np.abs(self.asini1_84-self.asini1_50)+np.abs(self.asini1_16-self.asini1_50))/2
                 
-                print(f'asini_1={self.asini1_50} +/- {self.asini1_err}')
+                    print(f'asini_1={self.asini1_50} +/- {self.asini1_err} Rsun')
             else:
                 
                 print('This object does not have its orbit sampled. Sample with draw_from_sb1_model()')
