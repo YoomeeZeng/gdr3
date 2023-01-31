@@ -65,7 +65,7 @@ Here is an example on how to use this project to retrieve and visualize an SB1 R
    ```sh
    star.draw_from_sb1_model(draws=500)  
    ```
-   Visualize the orbit with the 500 orbits drawn from the posteriors.
+   Visualize the published orbit along with the 500 orbits drawn from the posteriors.
 ![image](https://user-images.githubusercontent.com/20095290/215894345-306d8b02-b8fb-4570-a0ad-4f8260d0f4b3.png)
 
 6. We can also look at the distribution of asini and f(M) for SB1 orbits.
