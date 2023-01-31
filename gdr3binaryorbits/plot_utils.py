@@ -80,6 +80,26 @@ def plot_fm_dist(rv_samples,params_dict):
     gsrc=params_dict['gdr3_source']
     plt.title(f'Gaia DR3 {gsrc}',fontsize=48)
     plt.show()
+
+def plot_sb1_asini_dist(rv_samples,params_dict):
+    
+    fig, ax = plt.subplots(nrows=1, ncols=1,figsize=(20,10))
+    
+    for axis in ['top','bottom','left','right']:
+                    ax.spines[axis].set_linewidth(1.5)     
+                    
+    ax.yaxis.set_ticks_position('both')
+    ax.xaxis.set_ticks_position('both')
+    ax.set_xlabel(r'$\rm a\sin(i)~[R_\odot]$',fontsize=54)  
+    ax.set_ylabel(r'$\rm Normalized~Density$',fontsize=54)     
+    ax.tick_params(direction='in',axis='both',which='minor',length=3,width=2,labelsize=36)
+    ax.tick_params(direction='in',axis='both',which='major',length=6,width=2,labelsize=36)
+    ax.minorticks_on()   
+    
+    ax.hist(rv_samples.asini,bins=50,density=True,histtype='step',lw=3)
+    gsrc=params_dict['gdr3_source']
+    plt.title(f'Gaia DR3 {gsrc}',fontsize=48)
+    plt.show()
     
 def plot_sb1_orbit_data_comparison(rv_df,data,params_dict,rv_samples=pd.DataFrame()):
     

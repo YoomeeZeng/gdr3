@@ -8,6 +8,14 @@ def get_fm(per,e,k):
     y=(per*86400*(abs(k)**3)*((1-e**2)**1.5))/(2*3.142*0.0043*3.0857*10000000000000)
     return y
 
+def get_asini(per,e,k):
+    
+    omega=per*86400/(2*np.pi) #period in days to seconds
+    asini=k*1000*omega*1.4374e-9*np.sqrt(1-e**2)
+    
+    return asini
+
+
 def nr(g, dg, E, M,e,eps=1e-5):
     for i in range(50):
         E = E - (g(E,e,M))/dg(E,e,M)
@@ -88,5 +96,5 @@ def get_predicted_rv(time,rv_samples):
     return rvs_median, rvs_std
     
     
-    
+   
     

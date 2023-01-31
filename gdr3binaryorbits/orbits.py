@@ -254,6 +254,7 @@ class NSS:
             self.sb1_draws=pd.DataFrame({'period':period_dist,'ecc':ecc_dist,'K1':K1_dist,'arg_per':arg_per_dist,
                                          'gamma':gamma_dist,'t_peri':t_peri_dist})
             self.sb1_draws['fm']=np.vectorize(get_fm)(self.sb1_draws.period,self.sb1_draws.ecc,self.sb1_draws.K1)
+            self.sb1_draws['asini']=np.vectorize(get_asini)(self.sb1_draws.period,self.sb1_draws.ecc,self.sb1_draws.K1)            
             self.orbits_sampled=True
         else:
             print('This object does not have a Gaia RV orbit. Try querying NSS.')
@@ -313,7 +314,7 @@ class NSS:
             print('This object does not have a Gaia RV orbit. Try querying NSS.')
 
 
-    def get_fm_dist(self):
+    def get_sb1_fm_dist(self):
         
         if self.rv_orbit_loaded:
             
@@ -334,6 +335,28 @@ class NSS:
             
             print('This object does not have a Gaia RV orbit. Try querying NSS.')
             
+    def get_asini_dist(self):
+        
+        if self.rv_orbit_loaded:
+            
+            if self.orbits_sampled:
+                
+                if self.solution_type=="SB1" or self.solution_type=='SB1C':
+                    plot_sb1_asini_dist(self.sb1_draws,self.params_dict)
+                    
+                    self.asini1_50=self.sb1_draws.asini.quantile(0.5)
+                    self.asini1_84=self.sb1_draws.asini.quantile(0.84)
+                    self.asini1_16=self.sb1_draws.asini.quantile(0.16)       
+                    self.asini1_err=(np.abs(self.asini1_84-self.asini1_50)+np.abs(self.asini1_16-self.asini1_50))/2
+                
+                print(f'asini_1={self.asini1_50} +/- {self.asini1_err}')
+            else:
+                
+                print('This object does not have its orbit sampled. Sample with draw_from_sb1_model()')
+            
+        else:
+            
+            print('This object does not have a Gaia RV orbit. Try querying NSS.')
             
     def load_rv_observations(self,times,rvs,rv_errs,data_source):
         
