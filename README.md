@@ -41,6 +41,8 @@ Here is an example on how to use this project to retrieve and visualize an SB1 R
 
 1. Create a NSS object
    ```sh
+   from gdr3binaryorbits.orbits import NSS
+   
    star=NSS()
    ```
 2. A star can be loaded either through a cone search with RAJ2000 and DEJ2000 coordinates or through a direct query based on the Gaia DR3 source_id.
