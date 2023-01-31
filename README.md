@@ -8,7 +8,7 @@
 *** Thanks again! Now go create something AMAZING! :D
 -->
 
-#gdr3binaryorbits
+# gdr3binaryorbits
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -73,6 +73,13 @@ Here is an example on how to use this project to retrieve and visualize an SB1 R
 
 6. We can also look at the distribution of asini and f(M) for SB1 orbits.
 
+   ```sh
+   star.get_sb1_fm_dist()
+   star.get_asini_dist() 
+   
+   print(f'f(M)={star.fm_50} +/- {star.fm_err} Msun')
+   print(f'asini_1={star.asini1_50} +/- {star.asini1_err} Rsun')
+   ```
 ![image](https://user-images.githubusercontent.com/20095290/215894577-3262defe-4634-45bb-af84-edbf162581c2.png)
 
 
