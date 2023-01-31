@@ -27,29 +27,6 @@
 
 
 
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/tjayasinghe/gdr3binaryorbits">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
-
-<h3 align="center">project_title</h3>
-
-  <p align="center">
-    project_description
-    <br />
-    <a href="https://github.com/tjayasinghe/gdr3binaryorbits"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/tjayasinghe/gdr3binaryorbits">View Demo</a>
-    ·
-    <a href="https://github.com/tjayasinghe/gdr3binaryorbits">Report Bug</a>
-    ·
-    <a href="https://github.com/tjayasinghe/gdr3binaryorbits">Request Feature</a>
-  </p>
-</div>
-
 
 
 <!-- TABLE OF CONTENTS -->
@@ -83,24 +60,12 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+This is a tool to visualize the radial velocity orbits published in Gaia DR3.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- GETTING STARTED -->
-## Getting Started
-
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
 
 ### Installation
 
@@ -108,7 +73,7 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    git clone https://github.com/tjayasinghe/gdr3binaryorbits.git
    ```
-2. Install NPM packages
+2. Install with python
    ```sh
    python setup.py install
    ```
@@ -133,28 +98,6 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
-## Contact
-
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
-
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* []()
-* []()
-* []()
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
