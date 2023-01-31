@@ -8,12 +8,16 @@
 *** Thanks again! Now go create something AMAZING! :D
 -->
 
+#gdr3binaryorbits
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
 Python code to visualize the radial velocity orbits published in Gaia DR3.
 
+Note: Currently only supports queries for SB1 orbits. SB2 orbits will be added shortly!
+
+Details on the NSS orbits: [Gaia DR3 NSS_TWO_BODY_ORBIT Documentation](https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_non--single_stars_tables/ssec_dm_nss_two_body_orbit.html)
 
 <!-- GETTING STARTED -->
 
