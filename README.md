@@ -79,8 +79,7 @@ Here is an example on how to use this project to retrieve and visualize an SB1 R
    ```
 ![image](https://user-images.githubusercontent.com/20095290/215894577-3262defe-4634-45bb-af84-edbf162581c2.png)
 
-
-![image](https://user-images.githubusercontent.com/20095290/215894514-ad047bef-334b-46d7-8b73-e0f6fb816e75.png)
+![image](https://user-images.githubusercontent.com/20095290/215895776-c0939db1-f889-4371-b248-af4c0759315e.png)
 
 
 
