@@ -6,7 +6,7 @@ setup(name = "gdr3binaryorbits",
     description = "Visualize RV orbits from Gaia DR3",
     author = "Tharindu Jayasinghe",
     author_email = "",
-    url = "https://github.com/tjayasinghe/binarysedfit",
+    url = "https://github.com/tjayasinghe/gdr3binaryorbits",
     packages = find_packages(include=['gdr3binaryorbits', 'gdr3binaryorbits.*']),
     classifiers=[
       'Intended Audience :: Science/Research',
