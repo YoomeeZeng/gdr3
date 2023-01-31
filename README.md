@@ -12,9 +12,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This is a tool to visualize the radial velocity orbits published in Gaia DR3.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+Python code to visualize the radial velocity orbits published in Gaia DR3.
 
 
 <!-- GETTING STARTED -->
@@ -38,11 +36,43 @@ This is a tool to visualize the radial velocity orbits published in Gaia DR3.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Here is an example on how to use this project to retrieve and visualize an SB1 RV orbit published in Gaia DR3.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+1. Create a NSS object
+   ```sh
+   star=NSS()
+   ```
+2. A star can be loaded either through a cone search with RAJ2000 and DEJ2000 coordinates or through a direct query based on the Gaia DR3 source_id.
+   ```sh
+   star.query_source('5853193426917488128') #Query by source_id
+   star.query_coords(219.41107637177004,-63.36791102568197) #Cone search
+   ```
+   
+4. Once the star is loaded, query the Gaia DR3 NSS database and search for a SB1 orbit.
+   ```sh
+   star.query_nss('SB1')  
+   ```
+   
+   We can visualize the orbit
+     ```sh
+   star.plot_gaia_sb1()
+   ``` 
+   ![image](https://user-images.githubusercontent.com/20095290/215894156-09a84b90-76c6-493b-b9a1-d782b43997ef.png)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+5. We can better understand the quality of the published orbit by looking at the published uncertainties. Draw from the published Gaia DR3 posteriors for the RV orbital parameters
+
+   ```sh
+   star.draw_from_sb1_model(draws=500)  
+   ```
+   Visualize the orbit with the 500 orbits drawn from the posteriors.
+![image](https://user-images.githubusercontent.com/20095290/215894345-306d8b02-b8fb-4570-a0ad-4f8260d0f4b3.png)
+
+6. We can also look at the distribution of asini and f(M) for SB1 orbits.
+
+![image](https://user-images.githubusercontent.com/20095290/215894577-3262defe-4634-45bb-af84-edbf162581c2.png)
+
+
+![image](https://user-images.githubusercontent.com/20095290/215894514-ad047bef-334b-46d7-8b73-e0f6fb816e75.png)
 
 
 
@@ -53,36 +83,3 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo_name/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo_name/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: images/screenshot.png
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[Angular-url]: https://angular.io/
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
-[Laravel-url]: https://laravel.com
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com 
