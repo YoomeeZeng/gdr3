@@ -87,8 +87,8 @@ Here is an example on how to use this project to retrieve and visualize an SB1 R
 
    ```sh
    star.predict_next_rvminmax()
-   print(f'Next RV maximum of {round(self.rv_max,1)} km/s will occur on JD={round(self.jd_next_rv_max,5)} in {round(self.jd_next_rv_max-self.current_jd,1)} days.')     
-   print(f'Next RV minimum of {round(self.rv_min,1)} km/s will occur on JD={round(self.jd_next_rv_min,5)} in {round(self.jd_next_rv_min-self.current_jd,1)} days.')   
+   print(f'Next RV maximum of {round(star.rv_max,1)} km/s will occur on JD={round(star.jd_next_rv_max,5)} in {round(star.jd_next_rv_max-self.current_jd,1)} days.')     
+   print(f'Next RV minimum of {round(star.rv_min,1)} km/s will occur on JD={round(star.jd_next_rv_min,5)} in {round(star.jd_next_rv_min-self.current_jd,1)} days.')   
    ```
 
 
