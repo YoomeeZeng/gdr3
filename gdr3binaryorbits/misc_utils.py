@@ -3,19 +3,13 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 
-def get_fm(per,e,k):
-    #get mass function given period, ecc, and RV semi-amp
-    y=(per*86400*(abs(k)**3)*((1-e**2)**1.5))/(2*3.142*0.0043*3.0857*10000000000000)
-    return y
-
-def get_asini(per,e,k):
-    
-    omega=per*86400/(2*np.pi) #period in days to seconds
-    asini=k*1000*omega*1.4374e-9*np.sqrt(1-e**2)
-    
-    return asini
-
-
+'''
+Functions for modeling RVs
+nr
+g
+dg
+rv
+'''
 def nr(g, dg, E, M,e,eps=1e-5):
     for i in range(50):
         E = E - (g(E,e,M))/dg(E,e,M)
@@ -44,14 +38,59 @@ def rv(x,K,e,w,gamma):
 
     return y
 
-def get_phased_sb1_rvs(phases,K1,ecc,arg_per,gamma):
+
+def get_fm(per,e,k):
+    #get mass function given period, ecc, and RV semi-amp
+    y=(per*86400*(abs(k)**3)*((1-e**2)**1.5))/(2*3.142*0.0043*3.0857*10000000000000)
+    return y
+
+def get_asini(per,e,k):
+    #Get asini given period, ecc and RV-semi amp
+    omega=per*86400/(2*np.pi) #period in days to seconds
+    asini=k*1000*omega*1.4374e-9*np.sqrt(1-e**2)
     
+    return asini
+
+
+def get_mag_err(flux,flux_err):  
+    
+    '''
+    Returns the error in magnitude given flux,flux_err
+    
+    Parameters
+    ----------
+    flux: float
+        Flux
+    flux_err: float
+        Error in flux  
+        
+    Returns
+    ----------
+    mag_err: float
+        Error in magnitude
+    '''
+    
+    mag_err=(2.5/np.log(10))*(flux_err/flux)
+    
+    return mag_err
+
+
+def get_phased_sb1_rvs(phases,K1,ecc,arg_per,gamma):
+    #Helper function to return RVs for a SB1 system
     rvs=rv(phases,K1,ecc,arg_per,gamma)
     
     return rvs
 
-def get_rv_extrema(K1,ecc,arg_per,gamma):
+def get_phased_sb2_rvs(phases,K1,ecc,arg_per,gamma,q):
+    #Helper function to return RVs for a SB2 system
+    rvs_1=rv(phases,K1,ecc,arg_per,gamma)
+    rvs_2=-rvs_1*q
     
+    return rvs_1, rvs_2
+
+
+def get_rv_extrema(K1,ecc,arg_per,gamma):
+    #Return the phases at which the RV min/max occur, along with the RVs at those phases
     phases=np.arange(0,1,0.001)
     
     rvs=rv(phases,K1,ecc,arg_per,gamma)
@@ -64,15 +103,8 @@ def get_rv_extrema(K1,ecc,arg_per,gamma):
     
     return rv_max,phase_rv_max,rv_min,phase_rv_min
 
-def get_phased_sb2_rvs(phases,K1,ecc,arg_per,gamma,q):
-    
-    rvs_1=rv(phases,K1,ecc,arg_per,gamma)
-    rvs_2=-rvs_1*q
-    
-    return rvs_1, rvs_2
-
 def get_sb1_orbit_samples(period,ecc,K1,arg_per,gamma,t_peri):
-    
+    #Sample RVs for orbits
     epochs=np.linspace(2457389.0-1000,2457389.0+1000,10000)
     phases=((epochs-t_peri)/period)%1  
     
@@ -80,13 +112,12 @@ def get_sb1_orbit_samples(period,ecc,K1,arg_per,gamma,t_peri):
     
     return rv_sampled, phases
     
-
 def get_phase(time,period,epoch):
-    
+    #Calculates phase given period and epoch
     return ((time-epoch)/period)%1     
 
 def get_predicted_rv(time,rv_samples):
-    
+    #Predict RVs at a given time given a sampling of RB orbits
     phases=np.vectorize(get_phase)(time,rv_samples.period,rv_samples.t_peri)
     rvs=np.vectorize(rv)(phases,rv_samples.K1,rv_samples.ecc,rv_samples.arg_per,rv_samples.gamma)
     

@@ -16,28 +16,6 @@ from .plot_utils import *
 
 Gaia.MAIN_GAIA_TABLE = "gaiadr3.gaia_source"
 
-def get_mag_err(flux,flux_err):  
-    
-    '''
-    Returns the error in magnitude given flux,flux_err
-    
-    Parameters
-    ----------
-    flux: float
-        Flux
-    flux_err: float
-        Error in flux  
-        
-    Returns
-    ----------
-    mag_err: float
-        Error in magnitude
-    '''
-    
-    mag_err=(2.5/np.log(10))*(flux_err/flux)
-    
-    return mag_err
-
 class NSS:
     
     def __init__(self):
