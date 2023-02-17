@@ -145,7 +145,7 @@ class NSS:
                         self.arg_per_err=nss_table['arg_periastron_error'][0]                         
                         self.t_peri=nss_table['t_periastron'][0]
                         self.t_peri_err=nss_table['t_periastron_error'][0]
-                        self.t_peri_jd=epoch=2457389.0+self.t_peri
+                        self.t_peri_jd=epoch=2457388.5+self.t_peri
                         
                         #Lucy-Sweeney test for near circular binaries
                         self.ecc_over_err=self.ecc/self.ecc_err
