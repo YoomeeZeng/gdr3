@@ -110,10 +110,10 @@ class NSS:
                 self.RPmag_err=get_mag_err(gdr3_result['phot_rp_mean_flux'][0] ,gdr3_result['phot_rp_mean_flux_error'][0] ) 
                 
             else:
-                print('GSPC returned 0 matches.')                
+                print('Gaia DR3 Query returned 0 matches.')                
                 
         except:
-            print('Querying GSPC Failed.')
+            print('Gaia DR3 Query Failed.')
             
             
     def query_nss(self,solution_type):
@@ -149,7 +149,7 @@ class NSS:
                         
                         #Lucy-Sweeney test for near circular binaries
                         self.ecc_over_err=self.ecc/self.ecc_err
-                        if not self.ecc_over_err>5:
+                        if not self.ecc_over_err>5 and self.ecc<0.05:
                             print(f'Orbital eccentricity might be negligible: e/de={round(self.ecc_over_err,2)}')
                             print('Setting arg_periastron=0, ecc=0')
                             self.arg_per=0
@@ -176,8 +176,8 @@ class NSS:
                         print(f'e_orb={self.ecc}+/-{self.ecc_err}' )    
                         print(f'K1={self.K1}+/-{self.K1_err} km/s')  
                         print(f'v_gamma={self.gamma}+/-{self.gamma_err} km/s')        
-                        print(f'omega_per={self.arg_per}+/-{self.arg_per} deg')  
-                        print(f't_peri={self.t_peri_jd}+/-{self.t_peri}')
+                        print(f'omega_per={self.arg_per}+/-{self.arg_per_err} deg')  
+                        print(f't_peri={self.t_peri_jd}+/-{self.t_peri_err}')
                         print('-----------------------------------')                         
                 #Add more solution types: SB2                                                   
                 else:
