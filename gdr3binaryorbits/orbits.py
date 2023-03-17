@@ -124,9 +124,9 @@ class NSS:
             nss_query = Gaia.launch_job(f"select * from gaiadr3.nss_two_body_orbit as t1 "
                                               f"join gaiadr3.gaia_source as t2 using (source_id) where source_id={self.gdr3_source}")
             nss_table=nss_query.get_results().to_pandas()
-            
+
             if len(nss_table)>0:
-                nss_table=nss_table.loc[nss_table['nss_solution_type']==solution_type.encode()]
+                nss_table=nss_table.loc[nss_table['nss_solution_type']==solution_type]
                 nss_table.reset_index(drop=True,inplace=True)
                 
                 if len(nss_table)>0:
